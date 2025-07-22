@@ -1,0 +1,55 @@
+@layer base {
+  html, body, #root {
+    @apply m-0 p-0 w-full h-full;
+  }
+
+  body {
+    @apply bg-gray-50 text-gray-900 font-sans;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
+  }
+
+  a {
+    @apply text-emerald-600 hover:text-emerald-800 transition-colors duration-300 font-semibold;
+    position: relative;
+  }
+
+  a:hover::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 100%;
+    height: 2px;
+    background-color: #000000;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+  }
+
+  button {
+    @apply bg-emerald-600 text-white px-5 py-3 rounded-md shadow-md 
+    hover:bg-emerald-700 transition-colors duration-300 font-semibold 
+    focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2;
+  }
+
+  button, a {
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: #00754e;
+    border-radius: 10px;
+    border: 8px solid transparent;
+    background-clip: content-box;
+  }
+  
+}

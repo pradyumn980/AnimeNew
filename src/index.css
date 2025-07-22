@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  
+  html,
+  body,
+  #root {
+    @apply w-full h-full m-0 p-0;
+  }
+  :root {
+    
+    --background: 210 40% 98%;            
+    --foreground: 222 15% 15%;            
+
+    --card: 0 0% 100%;                    
+    --card-foreground: 222 15% 15%;       
+
+    --popover: 210 30% 96%;              
+    --popover-foreground: 222 15% 15%;    
+    --primary: 204 90% 53%;               
+    --primary-foreground: 210 100% 98%;   
+
+    --secondary: 270 60% 65%;             
+    --secondary-foreground: 270 80% 20%;  
+
+    --muted: 210 20% 80%;                
+    --muted-foreground: 210 15% 45%;     
+
+    --accent: 42 90% 60%;                 
+    --accent-foreground: 42 95% 98%;      
+
+    --destructive: 0 75% 60%;             
+    --destructive-foreground: 0 0% 98%; 
+
+    --border: 210 15% 85%;                
+    --input: 210 15% 85%;
+    --ring: 204 90% 60%;                  
+
+    --radius: 0.75rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-[hsl(var(--background))] text-[hsl(var(--foreground))];
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.4s ease, color 0.4s ease;
+    line-height: 1.6;
+  }
+
+  a, button {
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  .card-shadow {
+    @apply shadow-lg hover:shadow-2xl transition-shadow duration-300
+      rounded-[var(--radius)] bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))];
+  }
+
+  .anime-img {
+    @apply object-cover rounded-[var(--radius)] aspect-square max-w-[150px] shadow-md;
+  }
+
+  .btn-primary {
+    @apply bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]
+      font-semibold px-5 py-2 rounded-[var(--radius)] shadow-md
+      hover:bg-[hsl(var(--primary-foreground))] hover:text-[hsl(var(--primary))] transition-colors duration-300;
+  }
+
+  .btn-secondary {
+    @apply bg-[hsl(var(--secondary))] text-[hsl(var(--secondary-foreground))]
+      font-semibold px-4 py-2 rounded-[var(--radius)] shadow-sm
+      hover:bg-[hsl(var(--secondary-foreground))] hover:text-[hsl(var(--secondary))] transition-colors duration-300;
+  }
+  /* Add in global.css or tailwind.css */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+}
