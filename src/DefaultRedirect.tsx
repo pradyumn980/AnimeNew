@@ -1,7 +1,7 @@
 // DefaultRedirect.tsx
 import { Navigate } from "react-router-dom";
 import { useAuth } from "./lib/AuthContext";
-
+// ログインしていない場合はログインページにリダイレクト
 export default function DefaultRedirect() {
   const { isAuthenticated } = useAuth();
 
