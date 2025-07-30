@@ -28,7 +28,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   // Set axios base URL here if your backend is on localhost:9000
-  axios.defaults.baseURL = "http://localhost:8000";
+  axios.defaults.baseURL = "https://animenew.onrender.com";
 
   // On mount, check if token exists and fetch user data
   useEffect(() => {

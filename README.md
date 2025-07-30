@@ -59,7 +59,7 @@ AnimeFinder is a modern, full-stack web application for anime discovery, reviews
 
 ### Environment Variables
 - Configure your backend `.env` for MongoDB URI, JWT secret, etc.
-- The frontend expects the backend at `http://localhost:8000` by default.
+- The frontend expects the backend at `https://animenew.onrender.com` by default.
 
 ## Folder Structure
 ```

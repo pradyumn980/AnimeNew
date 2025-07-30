@@ -100,7 +100,7 @@ export default function Signup() {
     if (!registeredUser || !selectedAvatar) return;
     try {
       await axios.post(
-        "http://localhost:8000/api/set-avatar",
+        "https://animenew.onrender.com/api/set-avatar",
         {
           avatar: selectedAvatar,
         },
