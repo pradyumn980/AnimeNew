@@ -37,7 +37,7 @@ export default function Signup() {
   // Controls UI between signup form and avatar picker
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
 
-  const [customAvatar, setCustomAvatar] = useState<string | null>(null);
+  const [] = useState<string | null>(null);
   // Remove selectedAvatar and custom avatar logic
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
 

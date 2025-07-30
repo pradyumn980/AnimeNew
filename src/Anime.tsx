@@ -1,16 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Search, X, Filter, Clock, Star, Play, Calendar, Users, Loader2, ExternalLink } from "lucide-react";
+import { Search, X,  Clock, Star, Play, Calendar, Users, Loader2,  } from "lucide-react";
 import Loader from "./components/ui/Loader";
 import { Link } from 'react-router-dom'; // Ensure Link is imported
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "./components/ui/card";
+
 
 // Types
 type Anime = {
@@ -46,7 +40,7 @@ type FormValue = {
   status: string;
 };
 
-function AnimeCard({ anime, onViewDetails }: { anime: Anime; onViewDetails: (anime: Anime) => void }) {
+function AnimeCard({ anime,  }: { anime: Anime; onViewDetails: (anime: Anime) => void }) {
   
   return (
     <div className="group relative overflow-hidden rounded-lg border border-gray-800 transition-all duration-300 hover:border-red-500/50 hover:scale-[1.01] bg-[#0e0e0e] text-white hover:shadow-xl hover:shadow-red-500/20">

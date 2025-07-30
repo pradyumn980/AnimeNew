@@ -1,5 +1,5 @@
 // src/Profile.tsx
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { useAuth } from "./lib/AuthContext";
 import { Button } from "./components/ui/button";
 import { useNavigate } from "react-router-dom";

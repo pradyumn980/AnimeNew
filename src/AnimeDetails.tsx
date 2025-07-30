@@ -1,10 +1,10 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useRef, useEffect, useState } from "react";
-import { Link } from 'react-router-dom';
-import { Play } from 'lucide-react';
+
+
 import { Star } from 'lucide-react';
-import { showSuccessToast, showErrorToast } from "./lib/toast";
+
 import Loader from "./components/ui/Loader";
 
 function formatDate(dateStr: string | null): string {
@@ -56,7 +56,7 @@ export function AnimeDetails() {
   const navigate = useNavigate();
   const charactersRef = useRef<HTMLDivElement>(null);
   const recommendationsRef = useRef<HTMLDivElement>(null);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [, setIsScrolled] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);

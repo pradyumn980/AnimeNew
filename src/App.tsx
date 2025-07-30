@@ -11,15 +11,13 @@ import { useEffect, useState } from "react";
 import Community from "./Community";
 import Footer from "./components/Footer";
 import ResetPassword from "./ResetPassword";
-import { useNavigationType } from "react-router-dom";
 
 export function App() {
   const { isAuthenticated, user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const navigationType = useNavigationType();
-
-  const [isScrolled, setIsScrolled] = useState(false);
+  
+  const [, setIsScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {

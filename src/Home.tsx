@@ -50,7 +50,7 @@ export function Home() {
   const observerRef = useRef<HTMLDivElement | null>(null);
   const [slideIndex, setSlideIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
-  const [loadedImages, setLoadedImages] = useState(new Set());
+  const [, setLoadedImages] = useState(new Set());
   const allAnime = data?.pages.flatMap((page) => page.data) ?? [];
 
   const handleObserver = useCallback(

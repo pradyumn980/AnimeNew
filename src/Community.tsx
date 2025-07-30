@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 import { useEffect } from "react";
-import { showSuccessToast, showErrorToast } from "./lib/toast";
 
 export default function Community() {
   useEffect(() => { window.scrollTo(0, 0); }, []);

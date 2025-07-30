@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Loader2, Mail, Twitter, MessageCircle } from 'lucide-react';
-import { showSuccessToast, showErrorToast } from "../lib/toast";
 
 const Contact: React.FC = () => {
   const [form, setForm] = useState({ name: "", email: "", subject: "Feedback", message: "" });
