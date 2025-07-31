@@ -5,6 +5,7 @@ interface User {
   username: string;
   email: string;
   avatar?: string;
+  token?: string;
 }
 
 interface AuthContextType {
@@ -21,16 +22,18 @@ interface AuthContextType {
   setAvatar: (url: string) => void;
 }
 
+// Get API URL from environment (default to localhost for dev)
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:9000";
+
+// Set base URL globally
+axios.defaults.baseURL = API_BASE_URL;
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Set axios base URL here if your backend is on localhost:9000
-  axios.defaults.baseURL = "https://animenew.onrender.com";
-
-  // On mount, check if token exists and fetch user data
   useEffect(() => {
     const fetchUser = async () => {
       const token = localStorage.getItem("token");
@@ -38,13 +41,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setLoading(false);
         return;
       }
+
       try {
-        axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("token")}`;
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
         const res = await axios.get("/api/auth/me");
         localStorage.setItem("currentUser", JSON.stringify(res.data.user));
         setUser(res.data.user);
       } catch (err) {
         console.error("Failed to fetch user", err);
+        localStorage.removeItem("token");
       } finally {
         setLoading(false);
       }
@@ -52,32 +57,34 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     fetchUser();
   }, []);
 
-  // Login function
   const login = async (username: string, password: string): Promise<boolean> => {
     try {
       const res = await axios.post("/api/auth/login", { username, password });
-      if (res.data.user.token) {
-        localStorage.setItem("token", res.data.user.token);
-        setUser(res.data.user);
+
+      const { token, ...userData } = res.data.user;
+      if (token) {
+        localStorage.setItem("token", token);
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        setUser({ ...userData, token });
         return true;
       }
+
       return false;
     } catch (err) {
+      console.error("Login error:", err);
       return false;
     }
   };
 
-  // Logout function
   const logout = () => {
     localStorage.removeItem("token");
     delete axios.defaults.headers.common["Authorization"];
     setUser(null);
-    // Clear anime search data
-    localStorage.removeItem('animeSearchParams');
-    localStorage.removeItem('animeSearchResults');
+    localStorage.removeItem("currentUser");
+    localStorage.removeItem("animeSearchParams");
+    localStorage.removeItem("animeSearchResults");
   };
 
-  
   const register = async (
     username: string,
     password: string,
@@ -90,22 +97,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         ...extraData,
       });
 
-       if (res.data.user.token) {
-        localStorage.setItem("token", res.data.user.token);
-        setUser(res.data.user);
+      const { token, ...userData } = res.data.user;
+      if (token) {
+        localStorage.setItem("token", token);
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        setUser({ ...userData, token });
         return true;
       }
-      // Backend should send success status true/false
-      return res.data.success;
+
+      return false;
     } catch (err) {
+      console.error("Register error:", err);
       return false;
     }
   };
 
-  // Set avatar function
   const setAvatar = (url: string) => {
     if (!user) return;
-    // Update user avatar in context and localStorage
     const updatedUser = { ...user, avatar: url };
     setUser(updatedUser);
     localStorage.setItem("currentUser", JSON.stringify(updatedUser));
