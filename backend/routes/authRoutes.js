@@ -13,7 +13,7 @@ import { isAuthenticated } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 router.post("/register", register);
-router.post("/login", loginUser);
+router.post("/login",(req,res,next)=>{console.log("login route hit"); next()}, loginUser);
 router.post("/logout", logoutUser);
 router.get("/me", isAuthenticated, getCurrentUser);
 router.post("/set-avatar", isAuthenticated, setAvatar);
