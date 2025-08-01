@@ -22,32 +22,43 @@ const generateToken = (user, res) => {
 // POST /api/auth/register
 export const register = async (req, res) => {
   let { username, password, email, securityQuestion, securityAnswer } = req.body;
-  console.log(req.body)
-
-  username = username.trim().toLowerCase();  // Normalize username here
-
-  console.log("Register attempt for:", username);
+  username = username.trim().toLowerCase();
+  email = email.trim().toLowerCase();
 
   try {
-    const existing = await User.findOne({ username }); // Query with lowercase username
-    if (existing) {
-      console.log("User exists:", existing.username);
+    const existingUsername = await User.findOne({ username });
+    if (existingUsername) {
       return res.status(409).json({ message: "Username already exists" });
     }
-    
+
+    const existingEmail = await User.findOne({ email });
+    if (existingEmail) {
+      return res.status(409).json({ message: "Email already exists" });
+    }
+
     const hashed = await bcrypt.hash(password, 10);
     const user = await User.create({
-      username,  // Save normalized username
+      username,
       password: hashed,
       email,
       securityQuestion,
       securityAnswer,
     });
 
-    const token =generateToken(user, res);
+    const token = generateToken(user, res);
 
-    res.status(201).json({ user: { username: user.username, email: user.email ,token:token} });
+    res.status(201).json({
+      user: {
+        username: user.username,
+        email: user.email,
+        token: token,
+      },
+    });
   } catch (err) {
+    if (err.code === 11000) {
+      const field = Object.keys(err.keyPattern)[0];
+      return res.status(409).json({ message: `${field} already exists` });
+    }
     console.error("Error in register:", err);
     res.status(500).json({ message: "Server error during registration" });
   }
