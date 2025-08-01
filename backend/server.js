@@ -14,7 +14,7 @@ const app = express();
 // ✅ Allow both local and production frontend
 const allowedOrigins = [
   "http://localhost:5173", // or 3000, depending on your frontend port
-  "https://anime-new-beta.vercel.app/", // ✅ Replace with your actual Vercel frontend domain
+  "https://anime-new-beta.vercel.app", // ✅ Replace with your actual Vercel frontend domain
 ];
 
 app.use(
