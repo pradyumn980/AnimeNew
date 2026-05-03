@@ -11,20 +11,22 @@ connectDB();
 
 const app = express();
 
-// ✅ Allow both local and production frontend
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:9000", // vite --port 9000
-  "https://anime-new-beta.vercel.app",
+// ✅ Allow localhost (dev) and all Vercel deployments for this project
+const allowedOriginPatterns = [
+  /^http:\/\/localhost:\d+$/,               // any localhost port
+  /^https:\/\/anime-new[^.]*\.vercel\.app$/, // all animenew vercel previews
 ];
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      // Allow non-browser requests (e.g. Postman, server-to-server)
+      if (!origin) return callback(null, true);
+      const allowed = allowedOriginPatterns.some((pattern) => pattern.test(origin));
+      if (allowed) {
         callback(null, true);
       } else {
-        callback(new Error("Not allowed by CORS"));
+        callback(new Error(`CORS: origin not allowed → ${origin}`));
       }
     },
     credentials: true,
