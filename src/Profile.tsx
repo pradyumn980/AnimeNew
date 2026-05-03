@@ -98,11 +98,11 @@ export function Profile() {
   };
 
   return (
-    <div className="bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a] min-h-screen text-white px-6 py-10">
+    <div className="bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#0f172a] min-h-screen text-white px-4 sm:px-6 py-8 sm:py-10">
       {/* Header */}
-      <div className="max-w-4xl mx-auto mb-8">
-        <div className="flex items-center justify-between">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-400 to-emerald-400 bg-clip-text text-transparent">
+      <div className="max-w-4xl mx-auto mb-6 sm:mb-8">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-orange-400 to-emerald-400 bg-clip-text text-transparent">
             👤 User Profile
           </h1>
           <div className="flex items-center space-x-2">

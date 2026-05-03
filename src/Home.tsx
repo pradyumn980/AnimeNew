@@ -49,6 +49,7 @@ export function Home() {
 
   const observerRef = useRef<HTMLDivElement | null>(null);
   const [slideIndex, setSlideIndex] = useState(0);
+  const [synopsisExpanded, setSynopsisExpanded] = useState(false);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
   const [, setLoadedImages] = useState(new Set());
   const allAnime = data?.pages.flatMap((page) => page.data) ?? [];
@@ -89,10 +90,12 @@ export function Home() {
 
   const nextSlide = () => {
     setSlideIndex((prev) => (prev + 1) % Math.min(allAnime.length, 10));
+    setSynopsisExpanded(false);
   };
 
   const prevSlide = () => {
     setSlideIndex((prev) => (prev - 1 + Math.min(allAnime.length, 10)) % Math.min(allAnime.length, 10));
+    setSynopsisExpanded(false);
   };
 
   const handleImageLoad = (malId: number) => {
@@ -153,57 +156,80 @@ export function Home() {
             />
 
             {/* Content Overlay */}
-            <div className="absolute inset-0 z-30 flex items-center">
-              <div className="container mx-auto px-6 lg:px-12">
+            <div className="absolute inset-0 z-30 flex items-end sm:items-center pb-24 sm:pb-0">
+              <div className="container mx-auto px-4 sm:px-6 lg:px-12">
                 <div className="max-w-2xl">
-                  <div className="mb-4 flex items-center gap-4 text-sm">
-                    <span className="bg-red-600 px-3 py-1 rounded-full font-semibold">
+                  <div className="mb-3 flex items-center gap-2 sm:gap-4 text-xs sm:text-sm flex-wrap">
+                    <span className="bg-red-600 px-2 py-1 sm:px-3 rounded-full font-semibold">
                       #{i + 1} Trending
                     </span>
-                    <div className="flex items-center gap-2 text-yellow-400">
-                      <Star className="w-4 h-4 fill-current" />
+                    <div className="flex items-center gap-1 text-yellow-400">
+                      <Star className="w-3 h-3 sm:w-4 sm:h-4 fill-current" />
                       <span className="font-semibold">{formatScore(anime.score)}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-gray-300">
-                      <Calendar className="w-4 h-4" />
+                    <div className="flex items-center gap-1 text-gray-300">
+                      <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
                       <span>{formatYear(anime.aired)}</span>
                     </div>
                   </div>
-                  
-                  <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-4 text-white leading-tight">
+
+                  <h1 className="text-2xl sm:text-4xl md:text-6xl lg:text-7xl font-bold mb-3 text-white leading-tight">
                     {anime.title}
                   </h1>
-                  
-                  <p className="text-lg md:text-xl text-gray-300 mb-6 line-clamp-3 leading-relaxed">
-                    {anime.synopsis}
-                  </p>
-                  
-                  <div className="flex flex-wrap gap-4 mb-6">
-                    <span className="bg-blue-600 px-3 py-1 rounded-full text-sm font-medium">
+
+                  <div className="hidden sm:block mb-4">
+                    <p className={`text-base md:text-xl text-gray-300 leading-relaxed ${
+                      synopsisExpanded ? '' : 'line-clamp-3'
+                    }`}>
+                      {anime.synopsis}
+                    </p>
+                    {anime.synopsis && anime.synopsis.length > 200 && (
+                      <button
+                        onClick={() => setSynopsisExpanded((prev) => !prev)}
+                        className="mt-2 text-sm font-semibold text-white/70 hover:text-white transition-colors duration-200 flex items-center gap-1"
+                      >
+                        {synopsisExpanded ? (
+                          <>
+                            View less
+                            <svg className="w-4 h-4 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </>
+                        ) : (
+                          <>
+                            View more
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                            </svg>
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    <span className="bg-blue-600 px-2 py-1 sm:px-3 rounded-full text-xs sm:text-sm font-medium">
                       {anime.type}
                     </span>
-                    <span className="bg-purple-600 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1">
+                    <span className="bg-purple-600 px-2 py-1 sm:px-3 rounded-full text-xs sm:text-sm font-medium flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       {anime.episodes ?? "?"} eps
                     </span>
                     {anime.status && (
-                      <span className="bg-green-600 px-3 py-1 rounded-full text-sm font-medium">
+                      <span className="bg-green-600 px-2 py-1 sm:px-3 rounded-full text-xs sm:text-sm font-medium">
                         {anime.status}
                       </span>
                     )}
                   </div>
-                  
-                  <div className="flex gap-4">
+
+                  <div className="flex gap-3">
                     <Link
                       to={`/anime/${anime.mal_id}`}
-                      className="bg-red-600 hover:bg-red-700 px-8 py-3 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 hover:scale-105"
+                      className="bg-red-600 hover:bg-red-700 px-5 sm:px-8 py-2 sm:py-3 rounded-lg font-semibold transition-all duration-300 flex items-center gap-2 hover:scale-105 text-sm sm:text-base"
                     >
-                      <Play className="w-5 h-5" />
+                      <Play className="w-4 h-4" />
                       Watch Now
                     </Link>
-                    <button className="bg-white/20 hover:bg-white/30 backdrop-blur-sm px-8 py-3 rounded-lg font-semibold transition-all duration-300 border border-white/30">
-                      More Info
-                    </button>
                   </div>
                 </div>
               </div>
@@ -211,38 +237,38 @@ export function Home() {
           </div>
         ))}
 
-        {/* Navigation Controls */}
-        <div className="absolute bottom-8 right-8 z-40 flex items-center gap-3">
+        {/* Navigation Controls — hidden on mobile */}
+        <div className="hidden sm:flex absolute bottom-8 right-6 z-40 items-center gap-2">
           <button
             onClick={() => setIsAutoPlaying(!isAutoPlaying)}
-            className="bg-black/50 hover:bg-black/70 backdrop-blur-sm p-3 rounded-full transition-all duration-300 border border-white/20"
+            className="bg-black/50 hover:bg-black/70 backdrop-blur-sm p-2 sm:p-3 rounded-full transition-all duration-300 border border-white/20"
             title={isAutoPlaying ? "Pause slideshow" : "Play slideshow"}
           >
-            {isAutoPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5" />}
+            {isAutoPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
           </button>
           <button
             onClick={prevSlide}
-            className="bg-black/50 hover:bg-black/70 backdrop-blur-sm p-3 rounded-full transition-all duration-300 border border-white/20"
+            className="bg-black/50 hover:bg-black/70 backdrop-blur-sm p-2 sm:p-3 rounded-full transition-all duration-300 border border-white/20"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <ChevronLeft className="w-4 h-4" />
           </button>
           <button
             onClick={nextSlide}
-            className="bg-black/50 hover:bg-black/70 backdrop-blur-sm p-3 rounded-full transition-all duration-300 border border-white/20"
+            className="bg-black/50 hover:bg-black/70 backdrop-blur-sm p-2 sm:p-3 rounded-full transition-all duration-300 border border-white/20"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
 
         {/* Slide Indicators */}
-        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-40 flex gap-2">
+        <div className="absolute bottom-4 sm:bottom-8 left-1/2 -translate-x-1/2 z-40 flex gap-1.5 sm:gap-2">
           {featuredAnime.map((_, i) => (
             <button
               key={i}
               onClick={() => setSlideIndex(i)}
-              className={`w-3 h-3 rounded-full transition-all duration-300 ${
-                i === slideIndex 
-                  ? "bg-red-500 scale-125" 
+              className={`w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-all duration-300 ${
+                i === slideIndex
+                  ? "bg-red-500 scale-125"
                   : "bg-white/40 hover:bg-white/60"
               }`}
             />
@@ -251,14 +277,14 @@ export function Home() {
       </section>
 
       {/* Trending Anime Grid */}
-      <section className="px-6 py-16 container mx-auto">
-        <div className="flex items-center justify-between mb-12">
+      <section className="px-4 sm:px-6 py-10 sm:py-16 container mx-auto">
+        <div className="flex items-center justify-between mb-8 sm:mb-12">
           <div>
-            <h2 className="text-4xl font-bold mb-2 text-white flex items-center gap-3">
+            <h2 className="text-2xl sm:text-4xl font-bold mb-1 sm:mb-2 text-white flex items-center gap-3">
               <span className="text-red-500">🔥</span>
               Trending Anime
             </h2>
-            <p className="text-gray-400">Discover the most popular anime right now</p>
+            <p className="text-gray-400 text-sm sm:text-base">Discover the most popular anime right now</p>
           </div>
         </div>
 
@@ -282,7 +308,7 @@ export function Home() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-8">
           {allAnime.map((anime, index) => (
             <Card
               key={anime.mal_id}

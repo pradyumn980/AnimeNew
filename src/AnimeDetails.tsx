@@ -57,6 +57,7 @@ export function AnimeDetails() {
   const charactersRef = useRef<HTMLDivElement>(null);
   const recommendationsRef = useRef<HTMLDivElement>(null);
   const [, setIsScrolled] = useState(false);
+  const [synopsisExpanded, setSynopsisExpanded] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -147,7 +148,7 @@ export function AnimeDetails() {
             <img
               src={anime.images.webp.large_image_url}
               alt={anime.title}
-              className="relative w-full lg:w-80 xl:w-96 rounded-2xl shadow-2xl object-cover transform transition-transform duration-500 group-hover:scale-105"
+              className="relative w-full sm:w-72 lg:w-80 xl:w-96 max-h-[60vh] sm:max-h-none rounded-2xl shadow-2xl object-cover transform transition-transform duration-500 group-hover:scale-105"
             />
             {/* Score Badge */}
             {anime.score && (
@@ -186,9 +187,33 @@ export function AnimeDetails() {
             {/* Enhanced Description */}
             <div className="bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 p-6 rounded-2xl shadow-xl">
               <h2 className="text-2xl font-bold mb-4 text-purple-300">Synopsis</h2>
-              <p className="text-gray-300 leading-relaxed whitespace-pre-line">
+              <p className={`text-gray-300 leading-relaxed whitespace-pre-line ${
+                synopsisExpanded ? "" : "line-clamp-3"
+              }`}>
                 {anime.synopsis}
               </p>
+              {anime.synopsis && anime.synopsis.length > 200 && (
+                <button
+                  onClick={() => setSynopsisExpanded((prev) => !prev)}
+                  className="mt-3 text-sm font-semibold text-purple-400 hover:text-purple-300 transition-colors duration-200 flex items-center gap-1 group"
+                >
+                  {synopsisExpanded ? (
+                    <>
+                      View less
+                      <svg className="w-4 h-4 transition-transform duration-200 rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </>
+                  ) : (
+                    <>
+                      View more
+                      <svg className="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </>
+                  )}
+                </button>
+              )}
             </div>
 
             {/* Enhanced Watch Button */}
@@ -227,16 +252,16 @@ export function AnimeDetails() {
             ].map((item, index) => (
               <div
                 key={item.label}
-                className="group bg-gradient-to-br from-slate-700/60 to-slate-800/60 backdrop-blur-sm border border-slate-600/30 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-center"
+                className="group bg-gradient-to-br from-slate-700/60 to-slate-800/60 backdrop-blur-sm border border-slate-600/30 rounded-2xl p-3 sm:p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 text-center"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="text-3xl mb-2 transition-transform duration-300 group-hover:scale-110">
+                <div className="text-xl sm:text-3xl mb-1 sm:mb-2 transition-transform duration-300 group-hover:scale-110">
                   {item.icon}
                 </div>
-                <h3 className="text-purple-400 font-bold text-sm uppercase tracking-wide mb-2">
+                <h3 className="text-purple-400 font-bold text-xs uppercase tracking-wide mb-1 sm:mb-2">
                   {item.label}
                 </h3>
-                <p className="text-white font-semibold">{item.value}</p>
+                <p className="text-white font-semibold text-xs sm:text-base break-words">{item.value}</p>
               </div>
             ))}
           </div>

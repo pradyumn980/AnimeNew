@@ -384,43 +384,45 @@ export default function Anime() {
         {/* Enhanced Search Form */}
         {/* Reduce padding and margin in search form */}
         <div className="bg-slate-800/30 backdrop-blur-xl rounded-2xl p-4 border border-slate-700/50 shadow-xl mb-4">
-          <div className="flex flex-col lg:flex-row lg:items-end gap-3">
+          <div className="flex flex-col gap-3">
             {/* Search Input */}
             <input
               type="text"
               placeholder="Search for anime..."
-              className="flex-grow h-10 bg-slate-700/50 border-2 border-slate-600/50 text-white placeholder-slate-400 px-4 rounded-xl focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all duration-300 text-base backdrop-blur-sm min-w-0"
+              className="w-full h-10 bg-slate-700/50 border-2 border-slate-600/50 text-white placeholder-slate-400 px-4 rounded-xl focus:outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all duration-300 text-base backdrop-blur-sm"
               value={searchParams.search}
               onChange={(e) => setSearchParams(prev => ({ ...prev, search: e.target.value }))}
+              onKeyDown={(e) => e.key === "Enter" && searchAnime()}
             />
-            {/* Type Filter */}
-            <select
-              className="flex-shrink-0 h-10 bg-slate-700/50 border-2 border-slate-600/50 text-white px-4 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 backdrop-blur-sm min-w-[140px] text-base"
-              value={searchParams.type}
-              onChange={(e) => setSearchParams(prev => ({ ...prev, type: e.target.value }))}
-            >
-              <option value="">All Types</option>
-              <option value="tv">TV Series</option>
-              <option value="movie">Movies</option>
-              <option value="ova">OVA</option>
-              <option value="special">Specials</option>
-            </select>
-            {/* Status Filter */}
-            <select
-              className="flex-shrink-0 h-10 bg-slate-700/50 border-2 border-slate-600/50 text-white px-4 rounded-xl focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300 backdrop-blur-sm min-w-[140px] text-base"
-              value={searchParams.status}
-              onChange={(e) => setSearchParams(prev => ({ ...prev, status: e.target.value }))}
-            >
-              <option value="">All Status</option>
-              <option value="airing">Currently Airing</option>
-              <option value="complete">Completed</option>
-              <option value="upcoming">Coming Soon</option>
-            </select>
+            {/* Filters row */}
+            <div className="grid grid-cols-2 gap-3">
+              <select
+                className="h-10 bg-slate-700/50 border-2 border-slate-600/50 text-white px-3 rounded-xl focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all duration-300 backdrop-blur-sm text-sm"
+                value={searchParams.type}
+                onChange={(e) => setSearchParams(prev => ({ ...prev, type: e.target.value }))}
+              >
+                <option value="">All Types</option>
+                <option value="tv">TV Series</option>
+                <option value="movie">Movies</option>
+                <option value="ova">OVA</option>
+                <option value="special">Specials</option>
+              </select>
+              <select
+                className="h-10 bg-slate-700/50 border-2 border-slate-600/50 text-white px-3 rounded-xl focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all duration-300 backdrop-blur-sm text-sm"
+                value={searchParams.status}
+                onChange={(e) => setSearchParams(prev => ({ ...prev, status: e.target.value }))}
+              >
+                <option value="">All Status</option>
+                <option value="airing">Currently Airing</option>
+                <option value="complete">Completed</option>
+                <option value="upcoming">Coming Soon</option>
+              </select>
+            </div>
             {/* Search Button */}
             <button
               onClick={searchAnime}
               disabled={loading}
-              className="flex-shrink-0 h-10 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 disabled:from-gray-600 disabled:to-gray-700 text-white px-6 rounded-xl flex items-center gap-3 transition-all duration-300 shadow-lg hover:shadow-red-500/30 hover:scale-105 transform font-semibold text-base disabled:scale-100 disabled:cursor-not-allowed"
+              className="w-full h-10 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 disabled:from-gray-600 disabled:to-gray-700 text-white px-6 rounded-xl flex items-center justify-center gap-3 transition-all duration-300 shadow-lg hover:shadow-red-500/30 hover:scale-105 transform font-semibold text-base disabled:scale-100 disabled:cursor-not-allowed"
             >
               {loading ? <Loader2 className="animate-spin" size={20} /> : <Search size={20} />}
               {loading ? 'Searching...' : 'Search'}
