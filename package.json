@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "npx vite build",
+    "build": "node node_modules/vite/bin/vite.js build",
     "dev": "vite --port 9000",
     "check": "biome check . --write",
     "preview": "vite preview"
