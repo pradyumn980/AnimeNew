@@ -15,6 +15,7 @@ import Pricing from "./Pricing";
 import Shop from "./Shop";
 import Donate from "./Donate";
 import PremiumBadge from "./components/PremiumBadge";
+import Recommendations from "./Recommendations";
 
 export function App() {
   const { isAuthenticated, user } = useAuth();
@@ -39,6 +40,7 @@ export function App() {
     { to: "/community", label: "👥 Community" },
     { to: "/shop", label: "👕 Shop" },
     { to: "/donate", label: "❤️ Donate" },
+    { to: "/recommendations", label: "🤖 For You" },
   ];
 
   return (
@@ -165,6 +167,7 @@ export function App() {
           <Route path="/pricing" element={<ProtectedRoute><Pricing /></ProtectedRoute>} />
           <Route path="/shop" element={<ProtectedRoute><Shop /></ProtectedRoute>} />
           <Route path="/donate" element={<ProtectedRoute><Donate /></ProtectedRoute>} />
+          <Route path="/recommendations" element={<ProtectedRoute><Recommendations /></ProtectedRoute>} />
         </Routes>
       </main>
       {!hideHeader && <Footer />}

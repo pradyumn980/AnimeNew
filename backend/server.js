@@ -3,6 +3,7 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
 import avatarRoutes from "./routes/avatarRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
 import connectDB from "./config/database.js";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -41,6 +42,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api", avatarRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/ai", aiRoutes);
 
 // ✅ Start server
 const PORT = process.env.PORT || 8000;

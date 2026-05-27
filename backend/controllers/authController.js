@@ -51,6 +51,9 @@ export const register = async (req, res) => {
       user: {
         username: user.username,
         email: user.email,
+        avatar: user.avatar || null,
+        isPremium: user.isPremium ?? false,
+        premiumExpiresAt: user.premiumExpiresAt ?? null,
         token: token,
       },
     });
@@ -80,14 +83,16 @@ export const loginUser = async (req, res) => {
     return res.status(401).json({ message: "Invalid credentials" });
   }
 
-  const token =generateToken(user, res);
+  const token = generateToken(user, res);
   res.status(200).json({
     user: {
       id: user._id,
       username: user.username,
       email: user.email,
       avatar: user.avatar || null,
-      token:token
+      isPremium: user.isPremium ?? false,
+      premiumExpiresAt: user.premiumExpiresAt ?? null,
+      token: token,
     },
   });
 };
@@ -100,7 +105,9 @@ export const logoutUser = (req, res) => {
 
 // GET /api/auth/me
 export const getCurrentUser = async (req, res) => {
-  const user = await User.findById(req.userId);
+  const user = await User.findById(req.userId).select(
+    "username email avatar isPremium premiumExpiresAt securityQuestion securityAnswer"
+  );
   if (!user) return res.status(401).json({ message: "Not authenticated" });
   res.json({ user });
 };
