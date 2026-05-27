@@ -109,7 +109,7 @@ export default function AiChatbot() {
 		const infoMsg: ChatMessage = {
 			id: Math.random().toString(),
 			sender: "bot",
-			text: "🔄 Running taste quiz recommendations using Gemini 3.5...",
+			text: "Running taste quiz recommendations",
 			timestamp: new Date(),
 		};
 		setMessages((prev) => [...prev, infoMsg]);
