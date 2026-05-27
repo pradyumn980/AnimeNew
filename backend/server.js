@@ -2,6 +2,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/authRoutes.js";
 import avatarRoutes from "./routes/avatarRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
 import connectDB from "./config/database.js";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -39,6 +40,7 @@ app.use(cookieParser());
 // ✅ Routes
 app.use("/api/auth", authRoutes);
 app.use("/api", avatarRoutes);
+app.use("/api/payment", paymentRoutes);
 
 // ✅ Start server
 const PORT = process.env.PORT || 8000;

@@ -11,6 +11,10 @@ import { useEffect, useState } from "react";
 import Community from "./Community";
 import Footer from "./components/Footer";
 import ResetPassword from "./ResetPassword";
+import Pricing from "./Pricing";
+import Shop from "./Shop";
+import Donate from "./Donate";
+import PremiumBadge from "./components/PremiumBadge";
 
 export function App() {
   const { isAuthenticated, user } = useAuth();
@@ -33,6 +37,8 @@ export function App() {
     { to: "/", label: "🏠 Home" },
     { to: "/search", label: "🔍 Search" },
     { to: "/community", label: "👥 Community" },
+    { to: "/shop", label: "👕 Shop" },
+    { to: "/donate", label: "❤️ Donate" },
   ];
 
   return (
@@ -71,8 +77,17 @@ export function App() {
                 </Link>
               ))}
 
+              <Link
+                to="/pricing"
+                className={`flex items-center gap-1.5 text-white/90 hover:text-white font-medium transition-all duration-200 hover:scale-105 px-4 py-2 rounded-lg hover:bg-yellow-500/10 backdrop-blur-sm border border-transparent hover:border-yellow-500/40 ${
+                  location.pathname === "/pricing" ? "bg-yellow-500/20 text-yellow-300 border-yellow-500/40" : ""
+                }`}
+              >
+                ⭐ Premium
+              </Link>
+
               {isAuthenticated && (
-                <div className="relative group ml-2">
+                <div className="relative group ml-2 flex flex-col items-center">
                   <img
                     src={avatar || "/avatars/default-avatar.png"}
                     alt="User Avatar"
@@ -80,6 +95,9 @@ export function App() {
                     className="w-9 h-9 rounded-full border-2 border-red-500/60 cursor-pointer hover:scale-110 transition-all duration-200 hover:border-red-500 shadow-lg"
                     onClick={() => navigate("/profile")}
                   />
+                  <div className="absolute -top-2 -right-2">
+                    <PremiumBadge size="sm" />
+                  </div>
                   <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-black/90 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 border border-red-700/30 whitespace-nowrap">
                     Profile
                   </div>
@@ -144,6 +162,9 @@ export function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/community" element={<Community />} />
           <Route path="/reset" element={<ResetPassword />} />
+          <Route path="/pricing" element={<ProtectedRoute><Pricing /></ProtectedRoute>} />
+          <Route path="/shop" element={<ProtectedRoute><Shop /></ProtectedRoute>} />
+          <Route path="/donate" element={<ProtectedRoute><Donate /></ProtectedRoute>} />
         </Routes>
       </main>
       {!hideHeader && <Footer />}

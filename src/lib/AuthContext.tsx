@@ -6,6 +6,8 @@ interface User {
   email: string;
   avatar?: string;
   token?: string;
+  isPremium?: boolean;
+  premiumExpiresAt?: string | null;
 }
 
 interface AuthContextType {
@@ -20,6 +22,7 @@ interface AuthContextType {
     extraData: { email: string; securityQuestion: string; securityAnswer: string }
   ) => Promise<boolean>;
   setAvatar: (url: string) => void;
+  refreshUser: () => Promise<void>;
 }
 
 // Get API URL from environment (default to localhost for dev)
@@ -57,7 +60,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     fetchUser();
   }, []);
 
+  const refreshUser = async (): Promise<void> => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    try {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const res = await axios.get("/api/auth/me");
+      localStorage.setItem("currentUser", JSON.stringify(res.data.user));
+      setUser(res.data.user);
+    } catch (err) {
+      console.error("Failed to refresh user", err);
+    }
+  };
+
   const login = async (username: string, password: string): Promise<boolean> => {
+
     try {
       const res = await axios.post("/api/auth/login", { username, password });
 
@@ -129,6 +146,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         logout,
         register,
         setAvatar,
+        refreshUser,
       }}
     >
       {children}

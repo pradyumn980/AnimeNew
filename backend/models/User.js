@@ -7,7 +7,9 @@ const userSchema = new mongoose.Schema({
   securityQuestion: { type: String },
   securityAnswer: { type: String },
   avatar: { type: String, default: null },
-});
+  isPremium: { type: Boolean, default: false },
+  premiumExpiresAt: { type: Date, default: null },
+}, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);
 
