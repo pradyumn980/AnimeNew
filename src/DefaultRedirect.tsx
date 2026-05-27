@@ -3,7 +3,11 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "./lib/AuthContext";
 // ログインしていない場合はログインページにリダイレクト
 export default function DefaultRedirect() {
-  const { isAuthenticated } = useAuth();
+	const { isAuthenticated } = useAuth();
 
-  return isAuthenticated ? <Navigate to="/" replace /> : <Navigate to="/login" replace />;
+	return isAuthenticated ? (
+		<Navigate to="/" replace />
+	) : (
+		<Navigate to="/login" replace />
+	);
 }

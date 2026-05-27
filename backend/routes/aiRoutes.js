@@ -1,8 +1,8 @@
-import express from "express";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import express from "express";
 import { isAuthenticated } from "../middleware/authMiddleware.js";
-import UserPreferences from "../models/UserPreferences.js";
 import User from "../models/User.js";
+import UserPreferences from "../models/UserPreferences.js";
 
 const router = express.Router();
 const JIKAN_BASE = "https://api.jikan.moe/v4";
@@ -10,36 +10,39 @@ const JIKAN_BASE = "https://api.jikan.moe/v4";
 // Lazy Gemini initialisation (same pattern as Razorpay to avoid dotenv timing issues)
 let _genAI = null;
 const getGenAI = () => {
-  if (!_genAI) _genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-  return _genAI;
+	if (!_genAI) _genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+	return _genAI;
 };
 
 // ─── Helper: search Jikan for a single anime title ────────────────────────────
 async function jikanSearch(title) {
-  try {
-    const res = await fetch(
-      `${JIKAN_BASE}/anime?q=${encodeURIComponent(title)}&limit=1&sfw=true`
-    );
-    if (!res.ok) return null;
-    const json = await res.json();
-    const item = json.data?.[0];
-    if (!item) return null;
-    return {
-      mal_id: item.mal_id,
-      title: item.title,
-      title_english: item.title_english ?? item.title,
-      synopsis: item.synopsis ?? "",
-      score: item.score ?? null,
-      episodes: item.episodes ?? null,
-      status: item.status ?? "",
-      year: item.year ?? null,
-      genres: (item.genres ?? []).map((g) => g.name),
-      image: item.images?.webp?.large_image_url ?? item.images?.webp?.image_url ?? null,
-      url: item.url ?? `https://myanimelist.net/anime/${item.mal_id}`,
-    };
-  } catch {
-    return null;
-  }
+	try {
+		const res = await fetch(
+			`${JIKAN_BASE}/anime?q=${encodeURIComponent(title)}&limit=1&sfw=true`,
+		);
+		if (!res.ok) return null;
+		const json = await res.json();
+		const item = json.data?.[0];
+		if (!item) return null;
+		return {
+			mal_id: item.mal_id,
+			title: item.title,
+			title_english: item.title_english ?? item.title,
+			synopsis: item.synopsis ?? "",
+			score: item.score ?? null,
+			episodes: item.episodes ?? null,
+			status: item.status ?? "",
+			year: item.year ?? null,
+			genres: (item.genres ?? []).map((g) => g.name),
+			image:
+				item.images?.webp?.large_image_url ??
+				item.images?.webp?.image_url ??
+				null,
+			url: item.url ?? `https://myanimelist.net/anime/${item.mal_id}`,
+		};
+	} catch {
+		return null;
+	}
 }
 
 // Small delay to avoid Jikan 3 req/s limit
@@ -47,29 +50,46 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // ─── POST /api/ai/recommend ──────────────────────────────────────────────────
 router.post("/recommend", isAuthenticated, async (req, res) => {
-  try {
-    // Premium check
-    const user = await User.findById(req.userId);
-    if (!user) return res.status(404).json({ message: "User not found." });
-    if (!user.isPremium) {
-      return res.status(403).json({ message: "AI recommendations are a premium feature." });
-    }
+	try {
+		// Pre-flight: check API key is configured
+		if (
+			!process.env.GEMINI_API_KEY ||
+			process.env.GEMINI_API_KEY.startsWith("REPLACE")
+		) {
+			return res.status(503).json({
+				message:
+					"Gemini API key is not configured. Add GEMINI_API_KEY to backend/.env",
+			});
+		}
 
-    const { genres = [], mood = "", favoriteAnimes = [] } = req.body;
+		// Premium check
+		const user = await User.findById(req.userId);
+		if (!user) return res.status(404).json({ message: "User not found." });
+		if (!user.isPremium) {
+			return res
+				.status(403)
+				.json({ message: "AI recommendations are a premium feature." });
+		}
 
-    if (!genres.length && !favoriteAnimes.length) {
-      return res.status(400).json({ message: "Please provide at least your favourite genres or anime." });
-    }
+		const { genres = [], mood = "", favoriteAnimes = [] } = req.body;
 
-    // Persist preferences
-    await UserPreferences.findOneAndUpdate(
-      { userId: req.userId },
-      { userId: req.userId, favoriteGenres: genres, mood, favoriteAnimes },
-      { upsert: true, new: true }
-    );
+		if (!genres.length && !favoriteAnimes.length) {
+			return res
+				.status(400)
+				.json({
+					message: "Please provide at least your favourite genres or anime.",
+				});
+		}
 
-    // ── Build Gemini prompt ──────────────────────────────────────────────────
-    const prompt = `You are an expert anime recommendation engine. Based on the following user preferences, recommend exactly 8 anime titles.
+		// Persist preferences
+		await UserPreferences.findOneAndUpdate(
+			{ userId: req.userId },
+			{ userId: req.userId, favoriteGenres: genres, mood, favoriteAnimes },
+			{ upsert: true, new: true },
+		);
+
+		// ── Build Gemini prompt ──────────────────────────────────────────────────
+		const prompt = `You are an expert anime recommendation engine. Based on the following user preferences, recommend exactly 8 anime titles.
 
 User preferences:
 - Favorite genres: ${genres.length ? genres.join(", ") : "No preference"}
@@ -87,102 +107,200 @@ Rules:
 
 Respond with ONLY the JSON array.`;
 
-    const model = getGenAI().getGenerativeModel({ model: "gemini-1.5-flash" });
-    const result = await model.generateContent(prompt);
-    const rawText = result.response.text().trim();
+		const model = getGenAI().getGenerativeModel({ model: "gemini-3.5-flash" });
+		let result;
+		try {
+			result = await model.generateContent(prompt);
+		} catch (geminiErr) {
+			console.error("Gemini API error:", geminiErr?.message ?? geminiErr);
+			return res.status(502).json({
+				message: `Gemini API error: ${geminiErr?.message ?? "Unknown error"}`,
+			});
+		}
+		const rawText = result.response.text().trim();
+		console.log(
+			"Gemini raw response (first 300 chars):",
+			rawText.slice(0, 300),
+		);
 
-    // Parse Gemini JSON response (strip any accidental markdown fences)
-    let geminiRecs;
-    try {
-      const cleaned = rawText.replace(/^```json\n?/, "").replace(/\n?```$/, "").trim();
-      geminiRecs = JSON.parse(cleaned);
-      if (!Array.isArray(geminiRecs)) throw new Error("Not an array");
-    } catch {
-      console.error("Gemini JSON parse error. Raw:", rawText);
-      return res.status(500).json({ message: "AI returned invalid response. Please try again." });
-    }
+		// Parse Gemini JSON response — strip markdown fences if present
+		let geminiRecs;
+		try {
+			const cleaned = rawText
+				.replace(/^```(?:json)?\s*/i, "") // opening fence
+				.replace(/\s*```\s*$/i, "") // closing fence
+				.trim();
+			geminiRecs = JSON.parse(cleaned);
+			if (!Array.isArray(geminiRecs))
+				throw new Error("Response is not a JSON array");
+		} catch (parseErr) {
+			console.error(
+				"Gemini JSON parse failed:",
+				parseErr.message,
+				"\nRaw text:",
+				rawText,
+			);
+			return res.status(500).json({
+				message: `AI response could not be parsed: ${parseErr.message}. Please try again.`,
+			});
+		}
 
-    // ── Enrich with Jikan data ───────────────────────────────────────────────
-    const enriched = [];
-    for (const rec of geminiRecs.slice(0, 8)) {
-      const jikanData = await jikanSearch(rec.title);
-      await sleep(380); // respect Jikan rate limit
-      enriched.push({
-        title: jikanData?.title ?? rec.title,
-        title_english: jikanData?.title_english ?? rec.title,
-        reason: rec.reason,
-        mal_id: jikanData?.mal_id ?? null,
-        synopsis: jikanData?.synopsis ?? "",
-        score: jikanData?.score ?? null,
-        episodes: jikanData?.episodes ?? null,
-        status: jikanData?.status ?? "",
-        year: jikanData?.year ?? null,
-        genres: jikanData?.genres ?? [],
-        image: jikanData?.image ?? null,
-        url: jikanData?.url ?? null,
-      });
-    }
+		// ── Enrich with Jikan data ───────────────────────────────────────────────
+		const enriched = [];
+		for (const rec of geminiRecs.slice(0, 8)) {
+			const jikanData = await jikanSearch(rec.title);
+			await sleep(380); // respect Jikan rate limit
+			enriched.push({
+				title: jikanData?.title ?? rec.title,
+				title_english: jikanData?.title_english ?? rec.title,
+				reason: rec.reason,
+				mal_id: jikanData?.mal_id ?? null,
+				synopsis: jikanData?.synopsis ?? "",
+				score: jikanData?.score ?? null,
+				episodes: jikanData?.episodes ?? null,
+				status: jikanData?.status ?? "",
+				year: jikanData?.year ?? null,
+				genres: jikanData?.genres ?? [],
+				image: jikanData?.image ?? null,
+				url: jikanData?.url ?? null,
+			});
+		}
 
-    // Cache recommendations on preferences doc
-    await UserPreferences.findOneAndUpdate(
-      { userId: req.userId },
-      { lastRecommendations: enriched, lastRecommendedAt: new Date() }
-    );
+		// Cache recommendations on preferences doc
+		await UserPreferences.findOneAndUpdate(
+			{ userId: req.userId },
+			{ lastRecommendations: enriched, lastRecommendedAt: new Date() },
+		);
 
-    res.status(200).json({ recommendations: enriched });
-  } catch (err) {
-    console.error("AI recommend error:", err);
-    res.status(500).json({ message: "Failed to generate recommendations.", error: err.message });
-  }
+		res.status(200).json({ recommendations: enriched });
+	} catch (err) {
+		console.error("AI recommend error:", err?.message ?? err);
+		res.status(500).json({
+			message: `Failed to generate recommendations: ${err?.message ?? "Unknown error"}`,
+		});
+	}
 });
 
 // ─── GET /api/ai/preferences ─────────────────────────────────────────────────
 router.get("/preferences", isAuthenticated, async (req, res) => {
-  try {
-    const prefs = await UserPreferences.findOne({ userId: req.userId });
-    res.status(200).json({ preferences: prefs ?? null });
-  } catch (err) {
-    res.status(500).json({ message: "Failed to fetch preferences.", error: err.message });
-  }
+	try {
+		const prefs = await UserPreferences.findOne({ userId: req.userId });
+		res.status(200).json({ preferences: prefs ?? null });
+	} catch (err) {
+		res
+			.status(500)
+			.json({ message: "Failed to fetch preferences.", error: err.message });
+	}
 });
 
 // ─── POST /api/ai/preferences ────────────────────────────────────────────────
 router.post("/preferences", isAuthenticated, async (req, res) => {
-  try {
-    const { genres = [], mood = "", favoriteAnimes = [] } = req.body;
-    const prefs = await UserPreferences.findOneAndUpdate(
-      { userId: req.userId },
-      { userId: req.userId, favoriteGenres: genres, mood, favoriteAnimes },
-      { upsert: true, new: true }
-    );
-    res.status(200).json({ preferences: prefs });
-  } catch (err) {
-    res.status(500).json({ message: "Failed to save preferences.", error: err.message });
-  }
+	try {
+		const { genres = [], mood = "", favoriteAnimes = [] } = req.body;
+		const prefs = await UserPreferences.findOneAndUpdate(
+			{ userId: req.userId },
+			{ userId: req.userId, favoriteGenres: genres, mood, favoriteAnimes },
+			{ upsert: true, new: true },
+		);
+		res.status(200).json({ preferences: prefs });
+	} catch (err) {
+		res
+			.status(500)
+			.json({ message: "Failed to save preferences.", error: err.message });
+	}
+});
+
+// ─── POST /api/ai/chat ───────────────────────────────────────────────────────
+// Conversational AI chatbot for premium users
+router.post("/chat", isAuthenticated, async (req, res) => {
+	try {
+		// Pre-flight check
+		if (
+			!process.env.GEMINI_API_KEY ||
+			process.env.GEMINI_API_KEY.startsWith("REPLACE")
+		) {
+			return res
+				.status(503)
+				.json({ message: "Gemini API key is not configured." });
+		}
+
+		const user = await User.findById(req.userId);
+		if (!user) return res.status(404).json({ message: "User not found." });
+		if (!user.isPremium) {
+			return res.status(403).json({ message: "AI chat is a premium feature." });
+		}
+
+		const { message, history = [] } = req.body;
+		if (!message) {
+			return res.status(400).json({ message: "Message is required." });
+		}
+
+		// Format history for Google Gen AI SDK
+		// SDK expects format: { role: "user"|"model", parts: [{ text: "..." }] }
+		const formattedHistory = history.map((msg) => ({
+			role: msg.sender === "user" ? "user" : "model",
+			parts: [{ text: msg.text }],
+		}));
+
+		const model = getGenAI().getGenerativeModel({
+			model: "gemini-3.5-flash",
+			systemInstruction:
+				"You are Kuro, a friendly, enthusiastic, and highly knowledgeable AI anime guide at AnimeFinder. You help users discover anime. Keep your responses relatively short (2-3 paragraphs max) and conversational. Feel free to use emojis. When recommending titles, use their exact English titles so users can search them.",
+		});
+
+		const chat = model.startChat({
+			history: formattedHistory,
+		});
+
+		const result = await chat.sendMessage(message);
+		const replyText = result.response.text();
+
+		res.status(200).json({ reply: replyText });
+	} catch (err) {
+		console.error("AI chat error:", err);
+		res
+			.status(500)
+			.json({ message: "Chat helper failed.", error: err.message });
+	}
 });
 
 // ─── POST /api/ai/dev-grant-premium ─────────────────────────────────────────
 // DEV ONLY: Instantly grant or revoke premium on the logged-in user.
 // Remove or gate behind NODE_ENV check before going to production.
 router.post("/dev-grant-premium", isAuthenticated, async (req, res) => {
-  try {
-    const { grant = true, days = 30 } = req.body;
-    const update = grant
-      ? { isPremium: true, premiumExpiresAt: new Date(Date.now() + days * 24 * 60 * 60 * 1000) }
-      : { isPremium: false, premiumExpiresAt: null };
+	try {
+		const { grant = true, days = 30 } = req.body;
+		const update = grant
+			? {
+					isPremium: true,
+					premiumExpiresAt: new Date(Date.now() + days * 24 * 60 * 60 * 1000),
+				}
+			: { isPremium: false, premiumExpiresAt: null };
 
-    const user = await User.findByIdAndUpdate(req.userId, update, { new: true })
-      .select("username isPremium premiumExpiresAt");
+		const user = await User.findByIdAndUpdate(req.userId, update, {
+			new: true,
+		}).select("username isPremium premiumExpiresAt");
 
-    if (!user) return res.status(404).json({ message: "User not found." });
+		if (!user) return res.status(404).json({ message: "User not found." });
 
-    res.status(200).json({
-      message: grant ? `✅ Premium granted for ${days} days` : "❌ Premium revoked",
-      user: { username: user.username, isPremium: user.isPremium, premiumExpiresAt: user.premiumExpiresAt },
-    });
-  } catch (err) {
-    res.status(500).json({ message: "Failed to update premium status.", error: err.message });
-  }
+		res.status(200).json({
+			message: grant
+				? `✅ Premium granted for ${days} days`
+				: "❌ Premium revoked",
+			user: {
+				username: user.username,
+				isPremium: user.isPremium,
+				premiumExpiresAt: user.premiumExpiresAt,
+			},
+		});
+	} catch (err) {
+		res
+			.status(500)
+			.json({
+				message: "Failed to update premium status.",
+				error: err.message,
+			});
+	}
 });
 
 export default router;
