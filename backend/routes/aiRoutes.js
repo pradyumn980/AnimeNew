@@ -161,4 +161,28 @@ router.post("/preferences", isAuthenticated, async (req, res) => {
   }
 });
 
+// ─── POST /api/ai/dev-grant-premium ─────────────────────────────────────────
+// DEV ONLY: Instantly grant or revoke premium on the logged-in user.
+// Remove or gate behind NODE_ENV check before going to production.
+router.post("/dev-grant-premium", isAuthenticated, async (req, res) => {
+  try {
+    const { grant = true, days = 30 } = req.body;
+    const update = grant
+      ? { isPremium: true, premiumExpiresAt: new Date(Date.now() + days * 24 * 60 * 60 * 1000) }
+      : { isPremium: false, premiumExpiresAt: null };
+
+    const user = await User.findByIdAndUpdate(req.userId, update, { new: true })
+      .select("username isPremium premiumExpiresAt");
+
+    if (!user) return res.status(404).json({ message: "User not found." });
+
+    res.status(200).json({
+      message: grant ? `✅ Premium granted for ${days} days` : "❌ Premium revoked",
+      user: { username: user.username, isPremium: user.isPremium, premiumExpiresAt: user.premiumExpiresAt },
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Failed to update premium status.", error: err.message });
+  }
+});
+
 export default router;
