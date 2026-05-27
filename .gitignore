@@ -1,6 +1,11 @@
 node_modules/
 dist/
+
+# Ignore all environment files recursively in any subdirectories
 .env
-.env.local
-.env.production
-backend/.env
+.env.*
+*.env
+**/.env
+**/.env.*
+**/[Dd]evelopment.env
+**/[Pp]roduction.env
