@@ -107,7 +107,7 @@ Rules:
 
 Respond with ONLY the JSON array.`;
 
-		const model = getGenAI().getGenerativeModel({ model: "gemini-3.5-flash" });
+		const model = getGenAI().getGenerativeModel({ model: "gemini-3-flash-preview" });
 		let result;
 		try {
 			result = await model.generateContent(prompt);
@@ -243,7 +243,7 @@ router.post("/chat", isAuthenticated, async (req, res) => {
 		}));
 
 		const model = getGenAI().getGenerativeModel({
-			model: "gemini-3.5-flash",
+			model: "gemini-3-flash-preview",
 			systemInstruction:
 				"You are Kuro, a friendly, enthusiastic, and highly knowledgeable AI anime guide at AnimeFinder. You help users discover anime. Keep your responses relatively short (2-3 paragraphs max) and conversational. Feel free to use emojis. When recommending titles, use their exact English titles so users can search them.",
 		});
