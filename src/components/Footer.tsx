@@ -4,13 +4,13 @@ import { Link } from "react-router-dom";
 
 const Footer: React.FC = () => {
 	return (
-		<footer className="bg-black/80 border-t border-red-700/30 py-12 mt-8">
+		<footer className="bg-black/85 border-t border-red-700/30 py-12 mt-8">
 			<div className="max-w-7xl mx-auto px-6">
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-12">
 					{/* Website Name and Description */}
 					<div className="space-y-4">
 						<h3 className="text-3xl font-bold bg-gradient-to-r from-red-500 to-emerald-400 bg-clip-text text-transparent">
-							AnimeFinder
+							AniVerse
 						</h3>
 						<p className="text-gray-400 text-base leading-relaxed">
 							Discover, explore, and connect with the anime community. Find your
@@ -22,30 +22,42 @@ const Footer: React.FC = () => {
 					{/* Navigation Links */}
 					<div className="space-y-4">
 						<h4 className="text-white font-semibold text-xl">Quick Links</h4>
-						<div className="space-y-3">
+						<div className="grid grid-cols-2 gap-3 text-base">
 							<Link
 								to="/"
-								className="block text-gray-400 hover:text-white transition-colors duration-200 text-base"
+								className="block text-gray-400 hover:text-emerald-400 hover:translate-x-1 transition-all duration-200"
 							>
-								🏠 Home
+								Home
 							</Link>
 							<Link
 								to="/search"
-								className="block text-gray-400 hover:text-white transition-colors duration-200 text-base"
+								className="block text-gray-400 hover:text-emerald-400 hover:translate-x-1 transition-all duration-200"
 							>
-								🔍 Search Anime
+								Search Anime
 							</Link>
 							<Link
 								to="/community"
-								className="block text-gray-400 hover:text-white transition-colors duration-200 text-base"
+								className="block text-gray-400 hover:text-emerald-400 hover:translate-x-1 transition-all duration-200"
 							>
-								👥 Community
+								Community
 							</Link>
 							<Link
-								to="/profile"
-								className="block text-gray-400 hover:text-white transition-colors duration-200 text-base"
+								to="/shop"
+								className="block text-gray-400 hover:text-emerald-400 hover:translate-x-1 transition-all duration-200"
 							>
-								👤 Profile
+								Shop
+							</Link>
+							<Link
+								to="/donate"
+								className="block text-gray-400 hover:text-emerald-400 hover:translate-x-1 transition-all duration-200"
+							>
+								Donate
+							</Link>
+							<Link
+								to="/pricing"
+								className="block text-gray-400 hover:text-emerald-400 hover:translate-x-1 transition-all duration-200"
+							>
+								Premium
 							</Link>
 						</div>
 					</div>
@@ -57,10 +69,10 @@ const Footer: React.FC = () => {
 							<div className="flex items-center gap-2 text-gray-400">
 								<Mail className="w-4 h-4" />
 								<a
-									href="mailto:support@animefinder.com"
+									href="mailto:support@aniverse.com"
 									className="text-emerald-400 hover:underline"
 								>
-									support@animefinder.com
+									support@aniverse.com
 								</a>
 							</div>
 							<div className="flex items-center gap-2 text-gray-400">
@@ -91,7 +103,7 @@ const Footer: React.FC = () => {
 
 				<div className="border-t border-gray-700/50 mt-10 pt-8">
 					<div className="text-center text-gray-500 text-sm">
-						&copy; {new Date().getFullYear()} AnimeFinder. All rights reserved.
+						&copy; {new Date().getFullYear()} AniVerse. All rights reserved.
 					</div>
 				</div>
 			</div>
@@ -100,3 +112,4 @@ const Footer: React.FC = () => {
 };
 
 export default Footer;
+

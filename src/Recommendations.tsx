@@ -71,7 +71,7 @@ function PremiumGate() {
 				</h1>
 				<p className="text-white/60 text-base mb-2 leading-relaxed">
 					AI-powered anime recommendations are exclusive to{" "}
-					<strong className="text-white">AnimeFinder Premium</strong> members.
+					<strong className="text-white">AniVerse Premium</strong> members.
 				</p>
 				<p className="text-white/40 text-sm mb-8">
 					Get personalised picks tailored to your exact taste — powered by

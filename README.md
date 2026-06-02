@@ -1,6 +1,6 @@
-# AnimeFinder
+# AniVerse
 
-AnimeFinder is a modern, full-stack web application for anime discovery, reviews, and community engagement. It features user authentication, profile management, anime search, detailed anime pages, persistent reviews, and a vibrant community section.
+AniVerse is a modern, full-stack web application for anime discovery, reviews, and community engagement. It features user authentication, profile management, anime search, detailed anime pages, persistent reviews, and a vibrant community section.
 
 ## Features
 
@@ -24,7 +24,7 @@ AnimeFinder is a modern, full-stack web application for anime discovery, reviews
 
 ## Getting Started
 
-### Prerequisites
+## Prerequisites
 - Node.js (v16+ recommended)
 - npm or yarn
 - MongoDB (for backend)
@@ -32,8 +32,8 @@ AnimeFinder is a modern, full-stack web application for anime discovery, reviews
 ### Installation
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/animefinder.git
-   cd animefinder
+   git clone https://github.com/yourusername/aniverse.git
+   cd aniverse
    ```
 2. **Install dependencies:**
    ```bash
@@ -78,4 +78,5 @@ Pull requests are welcome! For major changes, please open an issue first to disc
 
 ---
 
-**AnimeFinder** — Discover, review, and connect with the anime community!
+**AniVerse** — Discover, review, and connect with the anime community!
+

@@ -56,10 +56,10 @@ const Contact: React.FC = () => {
 				<span className="font-semibold flex items-center gap-1">
 					<Mail className="w-4 h-4" />{" "}
 					<a
-						href="mailto:support@animefinder.com"
+						href="mailto:support@aniverse.com"
 						className="text-emerald-400 hover:underline"
 					>
-						support@animefinder.com
+						support@aniverse.com
 					</a>
 				</span>
 				<span className="flex items-center gap-1">

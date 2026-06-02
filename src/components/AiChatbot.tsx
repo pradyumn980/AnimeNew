@@ -211,7 +211,7 @@ export default function AiChatbot() {
 							</div>
 
 							{/* Chat Body */}
-							<div className="flex-1 overflow-y-auto p-4 space-y-4 flex flex-col bg-[#0b0e14]/50">
+							<div className="flex-1 overflow-y-auto scrollbar-hide p-4 space-y-4 flex flex-col bg-[#0b0e14]/50">
 								{messages.map((msg) => (
 									<div
 										key={msg.id}
@@ -254,9 +254,48 @@ export default function AiChatbot() {
 
 								{/* Loading indicator */}
 								{loading && (
-									<div className="self-start flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-2xl rounded-tl-none p-3 text-xs text-white/40">
-										<Loader2 className="w-3.5 h-3.5 animate-spin" />
-										Kuro is thinking…
+									<div className="self-start flex items-center gap-3 bg-gradient-to-r from-purple-950/40 to-pink-950/20 border border-purple-500/20 rounded-2xl rounded-tl-none p-3.5 text-xs text-white/70 shadow-lg shadow-purple-500/5 max-w-[85%] animate-pulse">
+										<div className="relative flex items-center justify-center shrink-0">
+											{/* Outer spinning aura / glowing circle */}
+											<div className="absolute w-6 h-6 rounded-full border border-purple-500/40 border-t-purple-500 border-r-pink-500 animate-spin" />
+											{/* Pulsing shuriken logo */}
+											<svg
+												className="w-4 h-4 text-purple-400 animate-pulse"
+												viewBox="0 0 96 96"
+												fill="none"
+												xmlns="http://www.w3.org/2000/svg"
+											>
+												<polygon
+													points="48,8 56,40 88,48 56,56 48,88 40,56 8,48 40,40"
+													fill="url(#loaderGrad)"
+													stroke="currentColor"
+													strokeWidth="4"
+													strokeLinejoin="round"
+												/>
+												<circle
+													cx="48"
+													cy="48"
+													r="10"
+													fill="#1f1a3a"
+													stroke="currentColor"
+													strokeWidth="4"
+												/>
+												<defs>
+													<linearGradient id="loaderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+														<stop offset="0%" stopColor="#a855f7" />
+														<stop offset="100%" stopColor="#ec4899" />
+													</linearGradient>
+												</defs>
+											</svg>
+										</div>
+										<div className="flex flex-col gap-0.5">
+											<span className="font-semibold text-[10px] text-purple-300 uppercase tracking-widest">
+												Channeling Anime Magic...
+											</span>
+											<span className="text-[11px] text-white/60">
+												Kuro is searching the databases...
+											</span>
+										</div>
 									</div>
 								)}
 								<div ref={messagesEndRef} />

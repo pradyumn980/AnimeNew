@@ -55,13 +55,13 @@ export default function Donate() {
 			const { data } = await axios.post("/api/payment/order", {
 				amount: finalAmount,
 				type: "donation",
-				itemName: `Support AnimeFinder — ₹${finalAmount} donation`,
+				itemName: `Support AniVerse — ₹${finalAmount} donation`,
 			});
 			const options = {
 				key: data.keyId || RAZORPAY_KEY_ID,
 				amount: data.amount,
 				currency: data.currency,
-				name: "AnimeFinder",
+				name: "AniVerse",
 				description: "Support the Creator ❤️",
 				image: "/favicon.ico",
 				order_id: data.orderId,
@@ -120,10 +120,10 @@ export default function Donate() {
 						<Sparkles className="w-4 h-4" /> Support the Creator
 					</div>
 					<h1 className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-pink-400 via-red-400 to-purple-400 bg-clip-text text-transparent mb-3">
-						Support AnimeFinder ❤️
+						Support AniVerse ❤️
 					</h1>
 					<p className="text-white/60 text-base leading-relaxed max-w-md mx-auto">
-						AnimeFinder is built with love by a solo developer. Your support
+						AniVerse is built with love by a solo developer. Your support
 						helps keep the servers running, new features coming, and the anime
 						community thriving. Every rupee counts! 🙏
 					</p>
@@ -187,7 +187,7 @@ export default function Donate() {
 						</p>
 						<ul className="text-white/60 text-xs space-y-1">
 							<li>☕ Coffee to fuel late-night coding sessions</li>
-							<li>🖥️ Server & hosting costs to keep AnimeFinder fast</li>
+							<li>🖥️ Server & hosting costs to keep AniVerse fast</li>
 							<li>🎨 New features, themes, and anime database updates</li>
 							<li>🌟 Keeping the app forever free for all anime fans</li>
 						</ul>
@@ -244,7 +244,7 @@ export default function Donate() {
 				>
 					Joined by{" "}
 					<span className="text-pink-400 font-semibold">1,200+ anime fans</span>{" "}
-					who support AnimeFinder 💖
+					who support AniVerse 💖
 				</motion.p>
 			</div>
 		</div>

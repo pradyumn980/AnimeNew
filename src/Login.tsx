@@ -46,7 +46,7 @@ export default function Login() {
 					</div>
 				)}
 				<h2 className="text-4xl font-bold mb-6 text-orange-600 text-center anime-font">
-					Login to AnimeFinder
+					Login to AniVerse
 				</h2>
 				{error && <p className="text-red-600 mb-4">{error}</p>}
 

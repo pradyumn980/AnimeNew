@@ -252,7 +252,7 @@ export default function Shop() {
 				key: data.keyId || RAZORPAY_KEY_ID,
 				amount: data.amount,
 				currency: data.currency,
-				name: "AnimeFinder Shop",
+				name: "AniVerse Shop",
 				description: `${cartCount} item(s)`,
 				image: "/favicon.ico",
 				order_id: data.orderId,

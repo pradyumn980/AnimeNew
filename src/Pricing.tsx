@@ -61,7 +61,7 @@ const plans = [
 		name: "Free",
 		price: 0,
 		period: "",
-		description: "Get started with AnimeFinder",
+		description: "Get started with AniVerse",
 		features: ["Browse anime catalog", "Basic search", "Community access"],
 		cta: "Current Plan",
 		highlight: false,
@@ -231,7 +231,7 @@ export default function Pricing() {
 			const { data } = await axios.post("/api/payment/order", {
 				amount: plan.price,
 				type: "membership",
-				itemName: `AnimeFinder ${plan.name} Premium`,
+				itemName: `AniVerse ${plan.name} Premium`,
 				metadata: { plan: plan.plan },
 			});
 
@@ -239,7 +239,7 @@ export default function Pricing() {
 				key: data.keyId || RAZORPAY_KEY_ID,
 				amount: data.amount,
 				currency: data.currency,
-				name: "AnimeFinder",
+				name: "AniVerse",
 				description: `${plan.name} Premium Membership`,
 				image: "/favicon.ico",
 				order_id: data.orderId,
@@ -255,7 +255,7 @@ export default function Pricing() {
 							razorpay_signature: response.razorpay_signature,
 						});
 						await refreshUser();
-						toast.success("🎉 Welcome to AnimeFinder Premium!");
+						toast.success("🎉 Welcome to AniVerse Premium!");
 					} catch {
 						toast.error("Payment verification failed. Contact support.");
 					}
@@ -291,7 +291,7 @@ export default function Pricing() {
 					transition={{ delay: 0.1 }}
 					className="text-4xl md:text-5xl font-extrabold bg-gradient-to-r from-red-400 via-purple-400 to-amber-400 bg-clip-text text-transparent mb-3"
 				>
-					Unlock the Full AnimeFinder
+					Unlock the Full AniVerse
 				</motion.h1>
 				<motion.p
 					initial={{ opacity: 0 }}

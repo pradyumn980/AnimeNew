@@ -10,7 +10,7 @@ export default function Community() {
 			<div className="max-w-6xl mx-auto">
 				<div className="text-center mb-12">
 					<h1 className="text-4xl font-bold bg-gradient-to-r from-red-500 to-emerald-400 bg-clip-text text-transparent mb-4">
-						AnimeFinder Community
+						AniVerse Community
 					</h1>
 					<p className="text-white/80 text-lg max-w-2xl mx-auto">
 						Connect with fellow anime enthusiasts, share your favorite shows,

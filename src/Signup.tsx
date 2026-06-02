@@ -124,7 +124,7 @@ export default function Signup() {
 			} catch (err) {
 				// ignore fetch error, fallback to setAvatar
 			}
-			showSuccessToast("Avatar set! Welcome to AnimeFinder.");
+			showSuccessToast("Avatar set! Welcome to AniVerse.");
 			navigate("/");
 		} catch (err) {
 			setError("Failed to save avatar. Please try again.");
@@ -177,7 +177,7 @@ export default function Signup() {
 						</div>
 					)}
 					<h2 className="text-2xl font-bold mb-6 text-orange-600 text-center anime-font">
-						Signup for AnimeFinder
+						Signup for AniVerse
 					</h2>
 					{error && <p className="text-red-600 mb-3">{error}</p>}
 					{successMessage && (

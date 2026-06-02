@@ -60,7 +60,7 @@ export function App() {
 						{/* Left: back + logo */}
 						<div className="flex items-center gap-2">
 							<h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-red-500 to-emerald-400 bg-clip-text text-transparent drop-shadow-lg">
-								AnimeFinder
+								AniVerse
 							</h1>
 						</div>
 
